@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Client{
 	public static void main(String[] args) throws IOException{
 		String serverName = (args.length > 0 ? args[0] : "[Default server name]");	//nadaje domyslna nazwe jesli brak parametru
-		System.out.println(args.length);
 		int portCmd = 21;
 		int portData = 20;
 		
