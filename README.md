@@ -1,4 +1,4 @@
-# SIK_Projekt
+# SIK_Projekt - Serwer FTP
 ## Założenia projektu
 * protokół FTP
 * obsługuje tylko logowanie anonymous bez hasła
