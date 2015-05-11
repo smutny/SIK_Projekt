@@ -10,6 +10,24 @@ public class ServerThread extends Thread{
 	private DataOutputStream outCmd;
 	private DataInputStream inData;
 	private DataOutputStream outData;
+	private String defaultPath = "./example"; 								//domyslna sciezka folderu z plikami
+	
+	public String[] listFiles(String path) throws IOException{
+		if(path.compareTo("") == 0){
+			path = "./";
+		}
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		String[] outputList = new String[listOfFiles.length];
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()) {
+				outputList[i] = ("File " + listOfFiles[i].getName());
+			} else if (listOfFiles[i].isDirectory()) {
+				outputList[i] = ("Directory " + listOfFiles[i].getName());
+			}
+		}
+		return outputList;
+	}
 	
 	public ServerThread(Socket sCmd) throws IOException{
 		socketCmd = sCmd;
@@ -35,6 +53,11 @@ public class ServerThread extends Thread{
 					break;
 				}else if(str.compareTo("NLST") == 0){
 					outData.writeUTF("<lista plikow w katalogu>");		//TODO
+					String[] out = listFiles(defaultPath);
+					for (int i = 0; i < out.length; i++) {
+						outData.writeUTF(out[i]);
+					}
+					outData.writeUTF("<koniec listy>");
 				}else{
 					outCmd.writeUTF(str);
 				}

@@ -12,6 +12,8 @@ public class Server{
 		try{
 			while(true){
 				Socket socket = server.accept();
+				
+				System.out.println("Socket port: " + socket.getPort());
 				System.out.println("Just connected to " + socket.getRemoteSocketAddress());
 				try{
 					new ServerThread(socket);

@@ -4,7 +4,8 @@ import java.util.Scanner;
 
 public class Client{
 	public static void main(String[] args) throws IOException{
-		String serverName = args[0];	//TODO: obsłużyć brak parametru
+		String defaultName = "localhost";
+		String serverName = (args.length > 0 ? args[0] : defaultName);	//nadaje domyslna nazwe jesli brak parametru
 		int portCmd = 21;
 		int portData = 20;
 		
@@ -33,7 +34,15 @@ public class Client{
 				if(str.compareTo("QUIT") == 0){
 					break;
 				}else if(str.compareTo("NLST") == 0){
-					System.out.println("Server says: " + inData.readUTF());
+					while (true){
+						String str1 = inData.readUTF();
+						System.out.println("Server says: " + str1);
+						if (str1.compareTo("<koniec listy>") == 0 ){
+							break;
+						}
+					}
+					
+					
 				}else{
 					System.out.println("Server says: " + inCmd.readUTF());
 				}
