@@ -58,9 +58,20 @@ public class ServerThread extends Thread{
 	}
 	
 	public void run(){
-		System.out.println("socketCmd: z " + socketCmd.getLocalPort() + " do " + socketCmd.getPort());
-		System.out.println("socketData: z " + socketData.getLocalPort() + " do " + socketData.getPort());
+		//System.out.println("socketCmd: z " + socketCmd.getLocalPort() + " do " + socketCmd.getPort());
+		//System.out.println("socketData: z " + socketData.getLocalPort() + " do " + socketData.getPort());
 		try{
+			outCmd.writeUTF("Prosze podac login");
+			while (true) {
+				String str2 = inCmd.readUTF();
+				if (str2.compareTo("anonymous") == 0 ) {
+					outCmd.writeUTF("Zalogowano jako anonymous");
+					break;
+				} else {
+					outCmd.writeUTF("Prosze podac login");
+				}
+			}
+			
 			String str = "";
 			
 			while(true){
@@ -88,11 +99,11 @@ public class ServerThread extends Thread{
 						socketData.close();
 						passiveMode = true;
 						outCmd.writeUTF("Tryb pasywny zostal wlaczony");
-						System.out.println("socketCmd: z " + socketCmd.getLocalPort() + " do " + socketCmd.getPort());
-						System.out.println("socketPasv: z " + socketPasv.getLocalPort() + " do " + socketPasv.getPort());
+						//System.out.println("socketCmd: z " + socketCmd.getLocalPort() + " do " + socketCmd.getPort());
+						//System.out.println("socketPasv: z " + socketPasv.getLocalPort() + " do " + socketPasv.getPort());
 					}
 				}else{
-					outCmd.writeUTF(str);
+					outCmd.writeUTF("Nieznana komenda: " + str);
 				}
 			}
 		}catch(Exception e){

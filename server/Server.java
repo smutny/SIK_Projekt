@@ -12,7 +12,7 @@ public class Server{
 		try{
 			while(true){
 				Socket socket = server.accept();
-				System.out.println("Just connected to " + socket.getRemoteSocketAddress());
+				System.out.println("Wlasnie polaczono z " + socket.getRemoteSocketAddress());
 				try{
 					new ServerThread(socket);
 				}catch(IOException e){
