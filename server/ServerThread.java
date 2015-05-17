@@ -48,12 +48,47 @@ public class ServerThread extends Thread{
 		return files;
 	}
 	
+	public String listFilesWithTypes(String path) throws IOException{
+		if(path.compareTo("") == 0) path = "./";
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		
+		String files = "";
+		for(int i = 0; i < listOfFiles.length; i++){
+			if (listOfFiles[i].isFile()) {
+				files += ("File " + listOfFiles[i].getName() + "\r\n");
+			} else if (listOfFiles[i].isDirectory()) {
+				files += ("Directory " + listOfFiles[i].getName() + "\r\n");
+			}
+			//files += listOfFiles[i] + "\r\n";
+		}
+		return files;
+	}
+	
 	public void nlst(Socket socket, BufferedWriter out) throws IOException{
 		if(socket != null && !socket.isClosed()){
 			outCmd.write("150 Opening ASCII mode data connection for file list\r\n");
 			outCmd.flush();
 			
 			out.write(listFiles2(defaultPath));
+			out.flush();
+			
+			outCmd.write("226 Transfer complete\r\n");
+			outCmd.flush();
+			
+			socket.close();
+		}
+		else{
+			outCmd.write("425 Can't open data connection.\r\n");
+			outCmd.flush();
+		}
+	}
+	public void list(Socket socket, BufferedWriter out) throws IOException{
+		if(socket != null && !socket.isClosed()){
+			outCmd.write("150 Opening ASCII mode data connection for file list\r\n");
+			outCmd.flush();
+			
+			out.write(listFilesWithTypes(defaultPath));
 			out.flush();
 			
 			outCmd.write("226 Transfer complete\r\n");
@@ -165,6 +200,21 @@ public class ServerThread extends Thread{
 						}
 						else{
 							nlst(socketData, outData);
+						}
+					}
+					else{
+						outCmd.write("530 Not logged in.\r\n");
+						outCmd.flush();
+					}
+				}
+				else if(str.compareTo("LIST") == 0){
+					if(loggedIn){
+						if(passiveMode){
+							list(socketPasv, outPasv);
+							passiveMode = false;
+						}
+						else{
+							list(socketData, outData);
 						}
 					}
 					else{
