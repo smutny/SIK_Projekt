@@ -16,7 +16,7 @@ public class ServerThread extends Thread{
 	private BufferedReader inData;
 	private BufferedWriter outPasv;
 	private BufferedReader inPasv;
-	private String defaultPath = "./example"; 								//domyslna sciezka folderu z plikami
+	private String defaultPath = "./root"; 								//domyslna sciezka folderu z plikami
 	
 	/*public String[] listFiles(String path) throws IOException{
 		if(path.compareTo("") == 0){
@@ -117,7 +117,7 @@ public class ServerThread extends Thread{
 	public void run(){
 		try{
 			String str = "";
-			outCmd.write("220 ProFTPD 1.3.4a Server ready.\r\n");
+			outCmd.write("220 FTP Server ready.\r\n");
 			outCmd.flush();
 			
 			while(true){
@@ -196,6 +196,7 @@ public class ServerThread extends Thread{
 					if(loggedIn){
 						if(passiveMode){
 							nlst(socketPasv, outPasv);
+							serverPasv.close();
 							passiveMode = false;
 						}
 						else{
@@ -211,6 +212,7 @@ public class ServerThread extends Thread{
 					if(loggedIn){
 						if(passiveMode){
 							list(socketPasv, outPasv);
+							serverPasv.close();
 							passiveMode = false;
 						}
 						else{
@@ -221,6 +223,10 @@ public class ServerThread extends Thread{
 						outCmd.write("530 Not logged in.\r\n");
 						outCmd.flush();
 					}
+				}
+				else if(str.compareTo("PWD") == 0 || str.compareTo("XPWD") == 0){
+					outCmd.write("257 \"" + defaultPath.substring(1) + "\" is the current directory\r\n");
+					outCmd.flush();
 				}
 				else if(str.compareTo("QUIT") == 0){
 					outCmd.write("221 Service closing control connection.\r\n");
